@@ -1,4 +1,5 @@
 # Exclude default R data formats and R studio files that may accidentally save your data.
+*.Rproj
 .Rproj.user
 .Rhistory
 .Rdata
