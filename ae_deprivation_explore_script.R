@@ -117,7 +117,7 @@ exp(coef(model3))
 exp(confint(model3))
 
 # Incidence rate ratio: deprived = 1.3536108 
-# The A&E admission rate is 1.37 (1.34 - 1.37) times higher, by rolling 12-month periods ending 01/01/2022 - 01/07/2023
+# The A&E admission rate is 1.35 (1.34 - 1.37) times higher, by rolling 12-month periods ending 01/01/2022 - 01/07/2023
 
 
 library(sjPlot)
