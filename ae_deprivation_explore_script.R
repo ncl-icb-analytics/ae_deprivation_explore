@@ -4,6 +4,7 @@ library(Hmisc)
 library(AER)
 library(lme4)
 library(tidyverse)
+library(broom)
 
 
 # Wilson score binomial ci function
@@ -116,6 +117,9 @@ exp(coef(model3))
 
 exp(confint(model3))
 
+tidy(model3, conf.int = TRUE, conf.level = 0.95, exponentiate = TRUE) %>% 
+  filter(term == "deprived")
+
 # Incidence rate ratio: deprived = 1.3536108 
 # The A&E admission rate is 1.35 (1.34 - 1.37) times higher, by rolling 12-month periods ending 01/01/2022 - 01/07/2023
 
@@ -123,3 +127,21 @@ exp(confint(model3))
 library(sjPlot)
 
 plot_model(model3, ci.lvl = 0.95, line.size = 2)
+
+
+
+
+#### Now per borough ###
+
+mod_out <- 
+  AE_balanced_scorecard %>%
+  nest_by(GP_Borough_Name) %>%
+  mutate(mod = list(glm.nb(AE_ATTENDS ~ age_cat + gender + deprived + offset(log(PERSONS))
+                           , data=data))) %>% 
+  mutate(ci = list(confint(mod))) %>% 
+  reframe(tidy(mod, conf.int = TRUE, conf.level = 0.95, exponentiate = TRUE))
+
+mod_out %>% 
+  filter(term == "deprived")
+
+
