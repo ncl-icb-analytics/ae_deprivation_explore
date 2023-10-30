@@ -55,7 +55,7 @@ AE_year %>%
   ggplot(aes(Quintile, prop))+
   geom_point()+
   # Why is this drawing in the wrong orientation?  Answer: they aren't it's the long hats and almost invisibly small bars
-  geom_errorbar(aes(ymax=ucl, ymin=prop), col="red") + 
+  geom_errorbar(aes(ymax=ucl, ymin=lcl), col="red") + 
   theme_nclicb()
 
 
@@ -133,7 +133,7 @@ plot_model(model3, ci.lvl = 0.95, line.size = 2)
 
 #### Now per borough ###
 
-mod_out <- 
+mod_out1 <- 
   AE_balanced_scorecard %>%
   nest_by(GP_Borough_Name) %>%
   mutate(mod = list(glm.nb(AE_ATTENDS ~ age_cat + gender + deprived + offset(log(PERSONS))
@@ -141,7 +141,21 @@ mod_out <-
   mutate(ci = list(confint(mod))) %>% 
   reframe(tidy(mod, conf.int = TRUE, conf.level = 0.95, exponentiate = TRUE))
 
-mod_out %>% 
+mod_out1 %>% 
+  filter(term == "deprived")
+
+
+
+
+mod_out2 <- 
+  AE_balanced_scorecard %>%
+  nest_by(GP_Borough_Name) %>%
+  mutate(mod = list(glm.nb(AE_ATTENDS ~ deprived + offset(log(PERSONS))
+                           , data=data))) %>% 
+  mutate(ci = list(confint(mod))) %>% 
+  reframe(tidy(mod, conf.int = TRUE, conf.level = 0.95, exponentiate = TRUE))
+
+mod_out2 %>% 
   filter(term == "deprived")
 
 
