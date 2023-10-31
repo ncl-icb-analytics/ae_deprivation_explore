@@ -2,15 +2,8 @@
 library(dplyr)
 library(MASS)
 library(broom)
-#read in
-# AE_balanced_scorecard_mn<- 
-#   read_excel("data/AE BS by month and 3-mth rolling.xlsx"
-#              , col_types = c("date", "numeric", "text", 
-#                              "numeric", "numeric", "text", "numeric", 
-#                              "numeric")
-#              , na = "NULL"
-#   )
 
+# Database connection.  Pulls the connection string from your environmental variable called SANDPIT
 library(DBI)
 con <- dbConnect(odbc::odbc(), .connection_string = Sys.getenv("SANDPIT"))
 

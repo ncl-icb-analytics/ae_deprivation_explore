@@ -4,7 +4,7 @@ library(MASS)
 library(broom)
 
 
-
+# Database connection.  Pulls the connection string from your environmental variable called SANDPIT
 library(DBI)
 con <- dbConnect(odbc::odbc(), .connection_string = Sys.getenv("SANDPIT"))
 
