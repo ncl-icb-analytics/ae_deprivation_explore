@@ -47,19 +47,23 @@ AE_admissions$deprived <- ifelse(AE_admissions$Quintile <2, 1,0)
 AE_admissions$age_cat <- factor(AE_admissions$ageband)
 AE_admissions$GP_Borough_Name <- factor(AE_admissions$GP_Borough_Name)
 
-
+# subset to just the most recent month
 # sub <- 
 #   AE_balanced_scorecard_mn %>% 
 #   filter(month == max(AE_balanced_scorecard_mn$month))
 
-#### Negative Binomial ####
 
+# Build a negative binomial regression model (like a Poisson regression, but deals with overdispersion better)
+# The dataset is aggregated, not patient-level, so need to weight each row according to the number of 
+# patients it refers to, this is what the 'offset' does.  Poisson / binomial / negative binomial
+# all use a 'log' link function, so it's common to log the offset for scaling purposes.
 admits_model <- glm.nb(IP_FROM_AE ~ age_cat + gender 
                   + deprived + offset(log(PERSONS))
                   , data=AE_admissions, na.action = na.omit)
 
 
-
-# Tidy output.  You want the 'estimate' and the 'conf.low' and 'conf.high'
+# Extract the coefficient.  The tidy function from broom package is helpful, as it exponentiates (converts the 
+# coefficient to an incidence rate ratio by reversing the link function), and calculates a confidence interval.
+# You want the estimate and conf.low & conf.high columns
 tidy(admits_model, conf.int = TRUE, conf.level = 0.95, exponentiate = TRUE) %>% 
   filter(term == "deprived")
